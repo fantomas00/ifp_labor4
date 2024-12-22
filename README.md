@@ -130,7 +130,21 @@ CL-USER> (test-insertion-sort)
 ### Тестові набори та утиліти
 
 ```lisp
+(defun check-replacer (name input expected &key (test #'eql) (count nil))
+  "Execute reduce with replacer on input, compare result with expected and print comparison status."
+  (format t "~:[FAILED~;passed~]... ~a~%" 
+          (equal (reduce (replacer (car input) (cadr input) :test test :count count)
+                         input :from-end t :initial-value nil)
+                 expected)
+          name))
 
+(defun test-replacer ()
+  "Run tests for the replacer function."
+  (check-replacer "test 1:" '(1 1 1 4) '(2 2 2 4) :test #'eql)
+  (check-replacer "test 2:" '(1 1 1 4) '(1 2 2 4) :test #'eql :count 2)
+  (check-replacer "test 3:" '(1 2 2 2 3) '(2 2 2 2 3) :test #'eql)
+  (check-replacer "test 4:" '(1 1 1 4) '(2 2 2 4) :test #'eql)
+  (check-replacer "test 5:" '(1 1 1 4) '(1 2 2 4) :test #'eql :count 1))
 ```
 
 ### Тестування
@@ -141,5 +155,4 @@ passed... test 2:
 passed... test 3:
 passed... test 4:
 passed... test 5:
-passed... test 6:
 ```
